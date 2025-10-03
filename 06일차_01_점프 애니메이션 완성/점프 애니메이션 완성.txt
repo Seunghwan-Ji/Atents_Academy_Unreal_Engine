@@ -1,0 +1,35 @@
+1. ABP_Character -> 애님그래프 -> Tutorial.
+2. Toground -> Walk 연결, Toground -> Run 연결.
+- 체공 상태가 끝났을 때 Idle 상태뿐만 아니라 Walk 또는 Run 상태로도 진입할 수 있어야됨.
+3. IsFalling -> Jump_Loop 연결.
+- 지면에서 떨어졌을 경우 바로 체공상태에 진입해야 하는 상황 고려.
+4. 에일리어스 노드 추가.
+-> 이름 예시: ToAir
+5. ToAir 노드 선택 -> 디테일 -> 스테이트 에일리어스 -> Idle, Walk, Run 체크.
+- ToAir 는 이 세 노드를 대신함.
+6. ToAir -> IsFalling 연결 -> 트랜지션 룰 더블클릭 -> Result 체크.
+7. 이벤트 그래프 -> Get Velocity 노드의 출력핀 변수로 승격.
+- 이름 예시: Velocity
+- IsFalling 에서 Jump_Start 와 Jump_Loop 로 가는 분기를 구별하는 기준은 Z 속력.
+8. 이벤트 블루프린트 업데이트 애니메이션 노드의 실행핀 -> Set Velocity 노드와 연결.
+9. Set Velocity 노드의 실행핀 -> Set Speed 노드와 연결.
+10. Set Velocity -> Vector Length XY 연결.
+11. 애님 그래프 -> IsFalling -> Jump_Start 트랜지션 룰 진입 -> Get Velocity 노드 추가 -> 핀 분할.
+12. Z핀 당겨서 '>' 연산자 노드 추가, 연산자 노드 -> Result 연결.
+- Z 속력이 0보다 클 경우, Jump_Start 로 판단.
+13. IsFalling -> Jump_Loop 트랜지션 룰 진입 -> Result 체크.
+14. IsFalling -> Jump_Loop 트랜지션 룰 선택 -> 디테일 -> 우선권 순서 -> 2
+15. IsFalling -> Jump_Start 트랜지션 룰 선택 -> 디테일 -> 우선권 순서 -> 1
+- Z 속력이 0보다 큰 게 아닌 경우의 반대 이므로 조건을 만들지 않고, 각 분기에 우선 순위를 매겨 else 구문으로 사용하는 느낌.
+16. Idle -> Walk 트랜지션 룰 선택 -> 디테일 -> 공유로 승격.
+- 룰 이름 예시: WalkRule
+17. ToGround -> Walk 트랜지션 룰 선택 -> 디테일 -> 공유 사용 -> WalkRule.
+18. Walk -> Run 트랜지션 룰 선택 -> 디테일 공유로 승격.
+- 룰 이름 예시: RunRule
+19. ToGround -> Run 트랜지션 룰 선택 -> 디테일 -> 공유 사용 -> RunRule.
+20. ToGround -> Idle 트랜지션 룰 진입 -> Result 체크.
+21. ToGround -> Idle 트랜지션 룰 선택 -> 디테일 -> 우선권 순서 -> 3
+- 이 분기는 else 구문 느낌.
+22. ToGround -> Walk 트랜지션 룰 선택 -> 디테일 -> 우선권 순서 -> 2
+23. ToGround -> Run 트랜지션 룰 선택 -> 디테일 -> 우선권 순서 -> 1
+- 1순위 분기의 조건이 2순위 분기의 조건에 포함되기 때문에 순서를 이렇게 판단.

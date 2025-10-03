@@ -1,0 +1,17 @@
+1. BP_Character -> 이벤트 그래프 -> Play Montage 노드의 Montage to Play 핀 -> Common_Backstep_Montage 선택.
+2. 노드 추가 -> Get Last Movement Input Vactor.
+3. 출력핀 당겨서 노드 추가 -> Vector Is Zero.
+4. 출력핀을 두 번째 Branch 노드의 Condition 핀과 연결.
+5. 두 번째 Branch 노드의 False 핀 당겨서 노드 추가 -> Set Actor Rotation.
+6. Get Last Movement Input Vactor 노드의 출력핀 당겨서 노드 검색 -> Make Rot from X.
+- 입력한 벡터 방향을 로컬 X축(Forward) 으로 삼는 Rotator(회전) 를 만들어주는 노드.
+- 즉 ,이동중인 방향을 정면으로 하기 위해서 캐릭터를 몇 도 만큼 회전시켜야 하는지에 대한 회전값을 계산하는 노드임.
+7. Make Rot from X -> Set Actor Rotation 의 New Rotation 핀과 연결.
+- 회전값을 전달받은 Set Actor Rotation 노드가 캐릭터를 회전시킴.
+8. 노드 추가 -> Select.
+9. Vector Is Zero -> Select 의 Index 핀과 연결.
+10. Select -> Play Montage 의 Montage to Play 핀과 연결.
+11. Select 의 False 핀 -> Common_Tumble_Montage.
+12. Select 의 True 핀 -> Common_Backstep_Montage.
+- Vector Is Zero 노드가 참이면 이동 입력이 없는 것이므로 백스텝 애니메이션 몽타주를 입력으로하고,
+거짓이면 이동 입력이 있는 것이므로 구르기 애니메이션 몽타주를 입력으로함.

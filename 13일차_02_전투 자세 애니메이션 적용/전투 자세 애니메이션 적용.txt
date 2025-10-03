@@ -1,0 +1,48 @@
+1. BP_Weapon -> 변수 추가.
+- 이름 예시: BlendSpace
+- 타입: 블렌드 스페이스.
+2. BP_Weapon 컴파일.
+3. BP_Sword -> 클래스 디폴트 -> 디폴트 -> Blend Space -> 없음 -> BS_Warrior 선택.
+4. BP_Character -> SelectWeapon -> 노드 추가 -> Mesh 컴포넌트 노드.
+5. Mesh 의 출력핀 당겨서 노드 추가 -> Get Anim Instance.
+6. Get Anim Instance 의 출력핀 당겨서 노드 추가 -> Cast To ABP_Character.
+- 애님 인스턴스는 ABP_Character 의 부모 클래스임.
+7. Cast To ABP_Character 노드 우클릭 -> 순수 형변환으로 변환 선택.
+- 실행핀으로 나오는 것과 불린 핀으로 나오는 것의 차이임.
+8. ABP_Character -> 변수 추가.
+- 이름 예시: BS_Weapon
+- 타입: 블렌드 스페이스.
+9. ABP_Character 컴파일.
+10. BP_Character -> SelectWeapon -> Cast To ABP_Character 의 첫 번째 출력핀 당겨서 노드 추가 -> SET BS Weapon.
+11. SET BS Weapon 복제.
+12. As ABP Character 핀을 두 타깃핀에 각각 연결.
+13. 두 회전 조정 옵션 노드의 실행핀을 각각 두 SET BS Weapon 노드에 연결.
+14. Equip Weapon 노드와 연결된 SET Current Weapon 의 두 번째 출력핀 당겨서 노드 추가 -> Get Blend Space.
+15. Get Blend Space -> 회전 조정 옵션 비활성화인 노드와 연결된 SET BS Weapon 노드의 BS Weapon 핀과 연결.
+16. ABP_Character -> 애님그래프 -> BS_Warrior 노드 선택 -> 디테일 -> 세팅 -> 블렌드 스페이스 -> 바인드 -> BS Weapon.
+- 노드 이름이 Blendspace Player 로 바뀜.
+17. BS_Unarmed 의 출력핀 기존 간선에 당겨서 노드 추가 -> Blend Poses by bool.
+18. Blendspace Player -> Blend Poses by bool 의 False Pose 핀과 연결.
+19. 노드 추가 -> Get BS Weapon.
+20. Get BS Weapon 의 출력핀 당겨서 연산자 노드 추가 -> "=="
+21. 연산자 노드의 출력핀 -> Active Value 핀과 연결.
+- BS Weapon 이 None 이면 True Pose 핀을 실행하고, None 이 아니면 False Pose 핀을 실행함.
+22. Blend Poses by bool 노드 선택 -> 디테일 -> 설정 -> 블렌드 시간 -> 바인드 -> 핀으로 노출 체크 해제.
+- Default Slot 노드에서 몽타주 애니메이션이 재생중이면 이전 노드인 Blend Poses by bool 이 무시되므로 블렌드 설정이 의미없음.
+23. 노드 추가 -> Layered blend per bone.
+24. Layered blend per bone 선택 -> 디테일 -> 설정 -> 레이어 설정 -> 인덱스 0 -> 분기 필터 추가 -> 본 이름: spine_01
+- spine_01 이하의 본들은 상반신.
+- 상반신만 전투 자세 애니메이션 적용 목적.
+25. 메시 스페이스 회전 블렌드 체크.
+26. Blend Poses by bool 의 출력핀 당겨서 노드 추가 -> New Save cached pose.
+- 이름 예시: CachedFullBody
+27. 노드 두 개 추가 -> Use cached pose 'CachedFullBody'.
+28. 각각 Layered blend per bone 의 Base Pose 핀, Slot 'Default Slot' 의 입력핀에 연결.
+29. Blend Poses 0 핀으로 연결된 Slot 'Default Slot' 노드 선택 -> 디테일 -> 세팅 -> 슬롯 이름 변경 -> Mannequin.UpperBody.
+30. Slot 'UpperBody' 노드 복제.
+31. Layered blend per bone -> Output Pose 사이에 복제한 Slot 'UpperBody' 삽입 후 연결.
+32. 복제한 Slot 'UpperBody' 노드 선택 -> 디테일 -> 세팅 -> 슬롯 이름 변경 -> Mannequin.FullBody.
+33. 에셋 브라우저 -> 필터 -> 애니메이션 몽타주.
+- 백스텝 몽타주 -> 슬롯 트랙에서 풀바디로 변경.
+- 텀블 몽타주 -> 슬롯 트랙에서 풀바디로 변경.
+- 드로우 몽타주 -> 슬롯 트랙에서 어퍼바디로 변경.

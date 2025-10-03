@@ -1,0 +1,15 @@
+예시
+
+1. 콘텐츠 드로어 -> 추가 -> 블루프린트 -> 블루프린트 매크로 라이브러리 선택 -> 부모 클래스 -> Object.
+- 이름 예시: BML_ObjectMacros
+- 매크로 라이브러리: 공용 매크로들의 집합.
+- 이 라이브러리에 추가된 매크로들은 모든 블루프린트에 공유됨.
+2. BML_ObjectMacros -> 매크로 추가.
+- 이름 예시: LocalVariable
+3. 노드 추가 -> Local Wildcard. (타입 형식에 구애받지 않는 변수, 어떤 핀을 연결해도 그 핀에 맞는 타입으로 변환됨.)
+4. Local Wildcard -> Outputs 연결.
+5. BP_Character -> SelectWeapon -> 노드 추가 -> Local Variable.
+6. Local Variable -> GET 노드와 연결.
+- Local Variable 의 출력핀 타입이 BP_Weapon 타입으로 변환됨.
+
+매크로 라이브러리는 부모 클래스를 지정해줘야 되는데 그 이유는, 라이브러리에 만든 매크로들이 어떤 클래스 계열에서 쓸 수 있는지 범위를 제한하기 위함.

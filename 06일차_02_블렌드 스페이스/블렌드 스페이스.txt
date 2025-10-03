@@ -1,0 +1,17 @@
+1. 콘텐츠 드로어 -> ABP_Character 선택 -> Ctrl + D (복제) -> 이름은 "ABP_Tutorial" (보관 용도)
+2. ABP_Character -> 애님그래프 -> 튜토리얼 노드 삭제.
+3. 이벤트 그래프 -> Set Velocity 노드 Shift delete.
+4. Get Velocity -> Vector Length XY 연결.
+5. Velocity 변수 삭제.
+6. 콘텐츠 드로어 -> 추가 -> 애니메이션 -> 레거시 -> 블렌드 스페이스 1D -> 스켈레톤 선택 -> SK_Mannequin.
+- 이름 예시: BS_Unarmed
+7. BS_Unarmed -> 에셋 디테일 -> 가로축 -> 이름 -> "Speed"
+- 프리뷰 창 아래쪽에 축의 이름이 None 에서 Speed 로 바뀜.
+8. 최대 축 값 -> 600, 그리드 분할 -> 2, 그리드 스냅 체크.
+9. 에셋 브라우저 -> Unarmed_Idle -> 0.0 에 드래그 배치.
+10. Unarmed_Walk -> 가운데 드래그 배치.
+11. Unarmed_Run -> 끝에(600.0) 드래그 배치.
+- 그래프 창에서 좌측 위에있는 버튼을 누르면 배치한 위치에 에셋의 이름이 뜸.
+12. ABP_Character -> 에셋 브라우저 -> BS_Unarmed 드래그 배치 및 아웃풋 포즈 노드와 연결.
+13. 애님그래프 -> BS_Unarmed 선택 -> 디테일 -> 좌표 -> Speed -> 핀 타입 -> Speed.
+- 또는 BS_Unarmed 의 Speed 핀 우클릭 -> 바인딩 -> Speed.

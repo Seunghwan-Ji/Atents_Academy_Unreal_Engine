@@ -1,0 +1,62 @@
+1. BP_Character -> SelectWeapon -> GET 노드의 출력핀 당겨서 노드 추가 -> Get State Montage Map.
+2. Get State Montage Map 의 출력핀 당겨서 노드 추가 -> FIND.
+3. SET State (Arming) -> FIND 연결.
+- Arming 상태를 키 값으로 몽타주 데이터를 찾음.
+- 그 몽타주 데이터 배열 안에서 인덱스로 접근해서 해당 무기의 몽타주를 찾음.
+4. FIND 의 출력핀 당겨서 노드 추가 -> Get Montage Data.
+5. Montage Data 핀 분할 -> 각 핀을 Play Montage 노드에 연결.
+6. SET State (Arming) -> Play Montage 연결 끊기.
+7. SET State (Arming) -> Get Montage Data -> Play Montage 연결.
+- 받아온 몽타주 애니메이션을 재생.
+8. BP_Weapon -> 함수 추가.
+- 이름 예시: GetStateMontageData
+9. BP_Character -> SelectWeapon -> 연결된 FIND -> Get Montage Data 노드 잘라내기 -> BP_Weapon -> GetStateMontageData -> 붙여넣기.
+10. GetStateMontageData 노드 -> Get Montage Data 연결.
+11. 변수에서 StateMontageMap 드래그 -> FIND 의 입력핀에 연결.
+12. FIND 의 키 핀 -> GetStateMontageData 연결.
+- GetStateMontageData 의 Key 핀 이름 변경 -> State (GetStateMontageData 노드를 선택하고 디테일에서 바꿔야됨.)
+13. Get Montage Data 의 Index 핀 -> GetStateMontageData 연결.
+- 또는 두 핀을 Getter 노드로 연결해줘도됨 (함수의 매개변수로 들어온 입력핀을 대체하는 노드)
+14. Get Montage Data 의 기본 출력핀 당겨서 노드 추가 -> Return Node.
+15. Get Montage Data 의 나머지 핀들도 Return Node 와 연결.
+- Return Node -> 디테일에서 핀 이름 변경 -> 각각 Montage, Rate, Section
+16. BP_Character -> SelectWeapon -> Get State Montage Map 노드 삭제.
+- 이제 BP_Character 에서는 해당 노드에 접근할 필요 없음.
+17. GET 의 출력핀 당겨서 노드 추가 -> Get State Montage Data.
+18. SET State (Arming) 의 두 출력핀 -> Get State Montage Data 연결.
+19. Get State Montage Data 의 모든 출력핀 -> Play Montage 연결.
+20. 변수 -> Weapons 복제 -> 이름: CurrentWeapon, 타입 컨테이너를 단일로 변경.
+21. 노드 추가 -> SET Current Weapon.
+22. Equip Weapon -> SET Current Weapon 연결.
+23. GET -> Equip Weapon 간선에 경유 노드 생성.
+24. 경유 노드 -> SET Current Weapon 연결.
+25. BPI_Character -> 함수 추가.
+- 이름 예시: IsArmed
+26. IsArmed -> 디테일 -> 출력핀 추가.
+- 이름 예시: bResult
+- BPI_Character 컴파일.
+27. BP_Character -> 인터페이스 -> IsArmed -> 노드 추가 -> Get Current Weapon.
+28. Get Current Weapon 출력핀 당겨서 연산자 노드 추가 -> "!="
+29. != 연산자 노드 -> Return Node 연결.
+- Current Weapon 이 None 이면 비무장 상태를 의미.
+- Current Weapon 이 None 이 아니면 무장 상태를 의미.
+30. SelectWeapon -> 노드 추가 -> Is Armed.
+- BP_Character 에 있는 Is Armed 임.
+31. SET State (Arming) -> Get State Montage Data 사이에 Is Armed 연결.
+32. Is Armed 의 Result 핀 -> Get State Montage Data 의 Index 핀에 연결.
+- Is Armed 의 결과가 True 이면 무기를 수납하는 애니메이션 선택, False 이면 무장 애니메이션을 선택하도록 유도.
+- 반환값 0 또는 1을 인덱스로 넣어주게됨.
+33. 노드 추가 -> Is Armed.
+34. Play Montage 의 On Notify Begin 핀 끊기.
+35. On Notify Begin 핀 -> Is Armed 연결.
+36. Branch 노드 추가 -> Is Armed 의 출력핀들과 연결.
+37. 노드 추가 -> Unequip Weapon.
+38. Branch 의 True 핀 -> Unequip Weapon 연결.
+39. Equip Weapon 의 Weapon 핀으로 들어오는 간선에 경유 노드 추가 -> Unequip Weapon 의 Weapon 핀과 연결.
+40. 노드 추가 -> SET Current Weapon -> Unequip Weapon 노드와 연결.
+- 무기를 수납했으니 Current Weapon 을 None 으로 변경함. (기본적으로 Setter 노드는 입력핀이 연결되지 않으면 None 을 주게됨.)
+41. Branch 의 False 핀 -> Equip Weapon 노드와 연결.
+- Play Montage 노드에서 입력받은 몽타주 애니메이션을 재생했을 때, 입력받은 몽타주가 무기를 꺼내는 애니메이션인지, 무기를 수납하는 애니메이션인지에 대한 구분이 필요함.
+- 무기를 장착할지 해제할지 판단해야하기 때문.
+- 애니메이션 재생중 Notify 지점을 히트하는 도중 캐릭터가 무장 상태면 등에 무기를 수납하는 애니메이션을 재생했다고 판단하여 Current Weapon 을 None 으로 설정함.
+- 반대로 비무장 상태면 무기를 꺼내는 애니메이션을 재생했다고 판단하여 Current Weapon 을 GET 노드에서 받은 BP_Weapon 타입 객체로 설정함.

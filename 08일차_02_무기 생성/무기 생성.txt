@@ -1,0 +1,41 @@
+1. 콘텐츠 드로어 -> 추가 -> 입력 -> 입력 액션.
+- 이름 예시: IA_SelectWeaponA
+2. IA_SelectWeaponA -> 트리거 -> 눌림.
+3. 콘텐츠 드로어 -> IA_SelectWeaponA 복제.
+- 이름 예시: IA_SelectWeaponB
+4. IMC_Default -> 매핑 추가 -> IA_SelectWeaponA, IA_SelectWeaponB.
+5. 키는 각각 Q, E.
+6. BP_PlayerController -> 이벤트 그래프 -> 노드 추가 -> EnhancedInputAction IA_SelectWeaponA, EnhancedInputAction IA_SelectWeaponB.
+7. 노드 추가 -> Get Controlled Pawn.
+8. BPI_Character -> 함수 추가 -> 이름: SelectWeaponA
+9. SelectWeaponA 함수 복제 -> 이름: SelectWeaponB
+10. BPI_Character 컴파일.
+11. BP_PlayerController -> 이벤트 그래프 -> Get Controlled Pawn 출력핀 당겨서 노드 추가 -> Select Weapon A, Select Weapon B.
+12. EnhancedInputAction IA_SelectWeaponA -> Select Weapon A 연결, EnhancedInputAction IA_SelectWeaponB -> Select Weapon B 연결.
+13. 콘텐츠 드로어 -> 추가 -> 블루프린트 클래스 -> 액터.
+- 이름 예시: BP_Weapon
+14. BP_Weapon -> 컴포넌트 추가 -> SkeletalMesh.
+15. SkeletalMesh 컴포넌트를 DefaultSceneRoot 컴포넌트로 드래그.
+- 루트 컴포넌트를 SkeletalMesh 로 변경.
+16. 콘텐츠 드로어 -> 추가 -> 블루프린트 클래스 -> 모든 클래스 -> BP_Weapon 선택.
+- 또는 콘텐츠 드로어에서 BP_Weapon 선택 및 우클릭 -> 자손 블루프린트 클래스 생성 선택.
+- 이름 예시: BP_Sword
+17. BP_Sword -> SkeletalMesh 컴포넌트 -> 디테일 -> 메시 -> 스켈레탈 메시 에셋 -> SKM_Sword 선택.
+18. BP_Character -> 내 블루프린트 -> 변수 추가 -> 값 타입 -> BP_Weapon -> 클래스 레퍼런스, BP_Character 컴파일.
+- 이름 예시: WeaponClasses
+- 클래스 레퍼런스 타입이란, 언리얼 엔진 고유 개념이며 클래스 형식 자체를 받는 타입임.
+- BP_GameMode 의 플레이어 컨트롤러 클래스와 디폴트 폰 클래스에서 클래스 자체를 지정해주는 것처럼,
+WeaponClasses -> 디테일 -> 기본값에서 클래스를 지정해줄 수 있다. (BP_Weapon 클래스를 상속하는 모든 클래스들 중 하나를 지정 가능.)
+19. WeaponClasses -> 디테일 -> 변수 -> 변수 타입 -> BP_Weapon 옆에 버튼 클릭 -> 배열, BP_Character 컴파일.
+20. 기본값 -> Weapon Classes -> 인덱스 추가, 0번 인덱스 -> BP_Sword.
+21. 이벤트 그래프 -> 노드 추가 -> Event BeginPlay, Get Weapon Classes, For Each Loop.
+22. Get Weapon Classes -> For Each Loop 연결, BeginPlay -> For Each Loop 연결.
+- For Each Loop 노드가 Get Weapon Classes 노드의 배열을 순회함.
+23. Loop Body 핀 당겨서 노드 추가 -> SpawnActor NONE.
+24. Array Element 핀 -> Class 핀 연결.
+25. Spawn Transform 핀 분할.
+26. Spawn Transform 의 Return Value 핀 변수로 승격, 생성된 Set 노드 삭제, 생성된 변수 이름 변경 -> Weapons
+27. Weapons -> 디테일 -> 변수 타입 -> 배열로 변경.
+- 기본값 -> Weapons 배열 비워져 있는지 확인. (비워야됨.)
+28. 노드 추가 -> Get Weapons -> 출력핀 당겨서 노드 검색 -> ADD (배열 항목).
+29. SpawnActor 의 Return Value 핀 및 실행핀 -> ADD 연결.

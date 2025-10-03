@@ -1,0 +1,19 @@
+1. 콘텐츠 드로어 -> 추가 -> 애니메이션 -> 블렌드 스페이스 -> SK_Mannequin.
+- 이름 예시: BS_Warrior
+2. BS_Warrior -> 에셋 디테일 -> 가로 축 -> 이름: Direction, 최소 축 값: -180, 최대 축 값: 180, 그리드 분할: 8, 그리드 스냅 체크.
+- 회전 각도 360을 분할 -> 왼쪽 방향으로 180, 오른쪽 방향으로 180.
+3. 세로 축 -> 이름: Speed, 최소 축 값: 0, 최대 축 값: 600, 그리드 분할: 2, 그리드 스냅 체크.
+4. 에셋 브라우저 -> 에셋들을 그래프에 배치 (이미지 참고)
+5. ABP_Character -> 애님그래프 -> 에셋 브라우저 -> BS_Warrior -> 그래프에 배치.
+6. BS_Unarmed 핀 해제.
+7. BS_Warrior -> Slot 'Default Slot' 연결.
+8. BS_Warrior 의 Speed 핀 우클릭 -> 바인딩 -> Speed.
+9. 이벤트 그래프 -> Try Get Pawn Owner 의 출력핀 당겨서 노드 추가 -> Get Actor Rotation.
+10. Get Velocity 의 출력핀 당겨서 노드 추가 -> Calculate Direction.
+11. Get Actor Rotation -> Calculate Direction 연결.
+12. Calculate Direction 의 출력핀 변수로 승격 -> 이름: Direction
+13. SET Speed -> SET Direction 연결.
+14. 애님그래프 -> BS_Warrior 의 Direction 핀 우클릭 -> 바인딩 -> Direction.
+15. ABP_Character 컴파일, BP_Character -> 셀프 컴포넌트 -> 디테일 -> 폰 -> 컨트롤러 회전 요 사용 체크.
+16. 캐릭터 무브먼트(회전 세팅) -> 무브먼트 방향으로 회전 조정 체크 해제.
+- 기획상 전투 자세중일 땐 정면을 바라보고 이동.

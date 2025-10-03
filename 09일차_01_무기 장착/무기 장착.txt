@@ -1,0 +1,58 @@
+1. BP_Character -> 이벤트 그래프 -> 노드 추가 -> Attach Actor To Component.
+- 여기서 Attach Actor To Actor 는 적합하지 않음.
+- BP_Character 의 루트 컴포넌트인 캡슐 컴포넌트에 붙게되는데, Sword 액터가 캐릭터 캡슐의 정중앙 위치에 붙기 때문에 월드에서 캐릭터 몸에 검이 꽂혀있는 것처럼 보임.
+2. Spawn Actor 의 Return Value 핀에서 나오는 간선에서 경유 노드를 만들고 Attach Actor To Component 의 Target 핀과 연결.
+3. Attach Actor To Component 의 Socket Name -> "spine_03_weapon"
+- 메시 컴포넌트 -> 디테일 -> 메시 -> 스켈레탈 메시 에셋 이미지 더블클릭 -> 스켈레톤 트리
+- 특정 본 클래스 우클릭 -> 소켓 추가를 선택하면 그 본에 소켓이 추가됨.
+- 추가된 에셋 우클릭 -> 프리뷰 에셋 추가 -> 에셋 선택을 하면 그 본의 소켓 자리에 에셋이 시각적으로 어떻게 붙는지 알 수 있음.
+- 예: 스켈레톤 트리 구조에서 spine_03_weapon 소켓과 hand_r_weapon 소켓 자리에 SKM_Sword 에셋 추가.
+- 아무 본이나 누르고 우클릭 -> 어태치된 에셋 모두 제거를 선택하면 배치된 모든 에셋을 비움.
+- 배치된 에셋을 트랜스폼 기즈모를 통해서 트랜스폼을 조정할 수 있음.
+4. Attach Actor To Component 의 Parent 핀에 메시 컴포넌트 드래그.
+- 이 컴포넌트가 소켓의 부모가 되는 이유는 소켓이 메시컴포넌트의 스켈레탈에 있기 때문.
+5. BP_Weapon -> 내 블루프린트 -> 변수 -> 추가 -> 이름: SocketOnEquipped, 타입: 네임.
+6. SocketOnEquipped 복제 -> 이름: SocketOnUnequipped, BP_Weapon 컴파일.
+- BP_Sword -> 클래스 디폴트 -> 디폴트에 추가된 변수 확인.
+7. BP_Sword -> 클래스 디폴트 -> 디폴트 -> SocketOnEquipped -> 이름(소켓 에셋명): hand_r_weapon,
+SocketOnUnequipped- > 이름: spine_03_weapon
+8. BP_Character -> 내 블루프린트 -> 함수 -> 추가 -> 이름: AttachActorToMesh
+10. AttachActorToMesh 진입 -> 노드 추가 -> Attach Actor To Component.
+11. AttachActorToMesh 노드 -> Attach Actor To Component 연결.
+12. Parent 핀에 메시 컴포넌트 드래그.
+13. AttachActorToMesh 노드 선택 -> 디테일 -> 입력 두 개 추가 -> 이름: Actor, 타입: 액터 / 이름: Socket, 타입: 네임.
+- 또는 Attach Actor To Component 의 Target 핀과 Target 핀을 AttachActorToMesh 노드에 드래그하면 자동으로 AttachActorToMesh 노드에 입력핀들을 만들어줌.
+14. 내 블루프린트 -> 함수 추가 -> 이름: UnequipWeapon
+15. UnequipWeapon 진입 -> 내 블루프린트 -> 함수에서 AttachActorToMesh 를 그래프에 드래그 배치 후 UnequipWeapon 노드와 연결.
+16. UnequipWeapon 노드 선택 -> 디테일 -> 입력 추가 -> 이름: Weapon, 타입: BP Weapon.
+17. Weapon 핀 -> Actor 핀과 연결.
+18. Weapon 핀 당겨서 노드 검색 -> Get Socket on Unequipped 추가.
+19. Get Socket on Unequipped -> Socket 핀과 연결.
+20. 내 블루프린트 -> 함수 -> UnequipWeapon 복제 -> 이름 변경: EquipWeapon
+21. EquipWeapon 진입 -> Get Socket on Unequipped 노드 삭제하고 Get Socket on Equipped 노드로 변경해서 다시 연결.
+22. 이벤트 그래프 -> Attach Actor To Component 노드와 Get Mesh 노드 삭제.
+23. 노드 추가 -> Unequip Weapon 노드로 대체 연결.
+24. 내 블루프린트 -> 함수 -> AttachActorToMesh 진입 -> Attach Actor To Component 분석해보기.
+- Location Rule 핀
+	- Keep Relative: 소켓을 기준으로 Sword 액터의 위치가 소켓으로부터 얼마나 떨어져 있는지를 반영해서 Sword 를 소켓에 Attach 함. (Sword 의 월드좌표를 소켓 기준 상대좌표로 변환함.)
+	- Keep World: Sword 의 월드 좌표를 유지한 채로 소켓에 Attach 함. (Sword 를 소켓에 붙여도 Sword 의 위치는 월드상에 스폰된 위치 그대로 유지.)
+	- Snap to Target: 상대 위치나 월드 위치를 무시하고 무조건 소켓 위치에 붙음. (Sword 위치를 소켓 위치와 정확하게 일치시킴)
+- Rotation Rule 핀
+	- Keep Relative: Sword 가 소켓과 똑같은 회전 상태에서 얼마나 더 회전 했는지를 반영해서 Sword 를 소켓에 Attach 함.
+	- Keep World: Sword 의 월드 좌표계의 회전 상태를 유지한 채로 소켓에 Attach 함. (예를 들어 Sword 를 월드상에서 회전값 0, 0, 0 으로 스폰했다면 그 회전값을 유지함.)
+	- Snap to Target: Sword 의 회전값을 무조건 소켓의 회전값과 일치시켜 Attach 함.
+- Scale Rule 핀 - 위 핀들과 같은 원리로 스케일을 조정할 수 있음.
+25. Location Rule 핀 -> Snap to Target, Rotation Rule 핀 -> Snap to Target.
+- 소켓과 동일한 위치와 회전값을 반영.
+- Scale Rule 핀은 Keep Relative 유지. 소켓에서 정한 기본 스케일을 따라가되, 예를들어 기본 스케일이 너무 크다면 소켓의 자식인 Sword 의 스케일을 소켓 스케일 대비 몇 퍼센트 낮출 수 있는 선택지 마련.
+
+25. 내 블루프린트 -> 그래프 추가.
+- 그래프 이름 예시: SelectWeapon
+26. SelectWeapon 그래프 진입 -> 노드 추가 -> Event SelectWeaponA, Event SelectWeaponB
+- 또는 인터페이스에서 SelectWeaponA, SelectWeaponB 드래그 배치.
+27. 노드 추가 -> Get Weapons.
+28. Get Weapons 의 출력핀 당겨서 노드 추가 -> Get.
+- Weapons 배열에 Sword 가 저장되어 있는걸 접근하기용.
+29. 노드 추가 -> Equip Weapon.
+30. Get -> Equip Weapon 연결, Event SelectWeaponA -> Equip Weapon 연결.
+- 플레이 시 Q를 누르면 검을 손에 쥐게됨.

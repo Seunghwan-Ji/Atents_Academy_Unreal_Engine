@@ -1,0 +1,38 @@
+1. BP_Sword -> 컴포넌트 -> 추가 -> Cascade Particle System Component.
+- 이름 예시: Trail
+2. Trail -> 디테일 -> 파티클 -> 템플릿 -> 에셋 선택 -> CPS_LightningTrail
+3. 워리어 어택1 몽타주 -> 노티파이 -> 노티파이 트랙 추가.
+4. 2번 트랙에 노티파이 스테이트 추가 -> 구간 예시: 15프레임부터 15프레임동안.
+5. 콘텐츠 드로어 -> 추가 -> 블루프린트 클래스 -> 모든 클래스 검색 -> "montage" -> 몽타주 노티파이 창 선택.
+- 이름 예시: ANS_AllowInputActionA
+6. ANS_AllowInputActionA -> 함수 오버라이드 추가 -> Received_NotifyBegin, Received_NotifyEnd, GetNotifyName.
+7. BPI_Character -> 함수 두 개 추가 및 컴파일.
+- 이름 예시
+- AllowInputActionA
+- DisallowInputActionA
+8. ANS_AllowInputActionA -> Received_NotifyBegin, Received_NotifyEnd, GetNotifyName 로직 작성.
+- 수업 시간에 작성한 로직 확인.
+9. 워리어 어택1 몽타주 -> 노티파이 트랙1 -> 노티파이 스테이트 우클릭 -> 노티파이 스테이트 대체 -> ANS_AllowInputActionA.
+- 워리어 어택2~4 몽타주에도 노티파이 트랙에 ANS_AllowInputActionA 노티파이 스테이트 추가.
+- 노티파이 스테이트 구간 예시)
+- 워리어 어택2: 20프레임부터 20프레임동안.
+- 워리어 어택3: 20프레임부터 25프레임동안.
+- 워리어 어택4: 30프레임부터 30프레임동안.
+10. 콘텐츠 드로어 -> ANS_AllowInputActionA 복제.
+- 이름 예시: ANS_AttackEnabled
+11. BPI_Character -> 함수 두 개 추가 및 컴파일.
+- 이름 예시
+- BeginWeaponActionA
+- EndWeaponActionA
+12. BP_Weapon -> 함수 두 개 추가 및 컴파일.
+- 이름 예시
+- BeginAttack
+- EndAttack
+13. BP_Sword -> 함수 오버라이드 두 개 추가 -> BeginAttack, EndAttack.
+14. BeginAttack, EndAttack 로직 작성.
+- 수업 시간에 작성한 로직 확인. (이벤트 그래프는 로직이 비어있어도됨)
+15. 워리어 어택1 몽타주 -> 노티파이 트랙2 -> 노티파이 스테이트 대체 -> ANS_AttackEnabled.
+16. ANS_AttackEnabled -> Received_NotifyBegin, Received_NotifyEnd 로직 작성.
+- 수업 시간에 작성한 로직 확인.
+17. BP_Character -> 이벤트 그래프 -> 이벤트 노드 추가 및 로직 작성 (AllowInputActionA, DisallowInputActionA, BeginWeaponActionA, EndWeaponActionA)
+- 수업 시간에 작성한 로직 확인. (BeginActionA 이벤트 노드 부분 포함)

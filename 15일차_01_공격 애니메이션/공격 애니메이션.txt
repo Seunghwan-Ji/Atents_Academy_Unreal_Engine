@@ -1,0 +1,45 @@
+1. 콘텐츠 드로어 -> 추가 -> 입력 -> 입력 액션.
+- 이름 예시: IA_ExcuteActionA
+2. IA_ExcuteActionA -> 트리거 -> 다운, IA_ExcuteActionA 저장.
+3. 콘텐츠 드로어 -> IA_ExcuteActionA -> 복제 -> 이름: IA_ExcuteActionB
+4. IMC_Default -> 매핑 두 개 추가 -> 각각 IA_ExcuteActionA: 좌클릭, IA_ExcuteActionB: 우클릭.
+5. BP_PlayerController -> 이벤트 그래프 -> 이벤트 노드 추가 -> IA_ExcuteActionA, IA_ExcuteActionB.
+6. 노드 추가 -> Get Controlled Pawn 두 개.
+7. BPI_Character -> 함수 4개 추가 -> BeginActionA, BeginActionB, EndActionA, EndActionB.
+8. BP_PlayerController -> 이벤트 그래프 -> 노드 추가 -> BeginActionA, BeginActionB, EndActionA, EndActionB.
+9. 노드 연결 IA_ExcuteActionA 의 Started -> BeginActionA.
+10. 노드 연결 IA_ExcuteActionA 의 Completed -> EndActionA.
+11. 노드 연결 Get Controlled Pawn -> BeginActionA, EndActionA.
+12. IA_ExcuteActionB 노드도 똑같이 진행.
+13. BP_Character -> 이벤트 그래프 -> 이벤트 노드 추가 -> BeginActionA.
+14. 노드 추가 -> Is State, Branch, SET State (Acting).
+15. 노드 연결 -> BeginActionA -> Is State -> Branch (True) -> SET State (Acting).
+16. 노드 추가 -> Is Armed, Branch, Get Current Weapon.
+17. 노드 연결 -> SET State (Acting) -> Is Armed -> Branch.
+18. 노드 추가 및 연결 -> Get Current Weapon -> Get State Montage Data.
+19. State 핀 연결 -> SET State (Acting) -> Get State Montage Data.
+20. 노드 추가 및 연결 -> Get State Montage Data -> Play Montage.
+21. 노드 추가 및 연결 -> Get Mesh -> Play Montage.
+22. 노드 연결 -> Branch -> Play Montage.
+23. 노드 추가 및 연결 -> Play Montage (On Blend Out) -> SET State (Idle).
+24. 콘텐츠 드로어 -> 어택 애니메이션 에셋들 애님 몽타주로 생성 -> Warrior_Attack_1, Warrior_Attack_2, Warrior_Attack_3, Warrior_Attack_4
+25. 콘텐츠 드로어 -> 데이터 에셋 추가 (클래스: BP_StateMontageData).
+- 이름 예시: DA_Sword_Acting
+26. DA_Sword_Acting -> 인덱스 4개 추가 및 몽타주 에셋 배분.
+27. BP_Sword -> State Montage Map -> 엘리먼트 추가 -> key: Acting, value: DA_Sword_Acting.
+28. 몽타주 애니메이션 에셋들 진입해서 몽타주 슬롯들을 Default 슬롯이 아닌 다른 슬롯으로 교체 (어퍼바디 또는 풀바디)
+- 애님 그래프에서 내용을 수정하지 않고 바로 공격 애니메이션을 적용하기 위함.
+29. 노드 연결 수정 -> BeginActionA -> Is Armed -> Branch -> Is State -> Branch -> SET State (Acting) -> Play Montage.
+- 무장 상태를 먼저 검사함.
+- 무장 상태가 아닌 상태에서 클릭 공격을 하면 Acting 상태에서 벗어나지 않기 때문.
+30. 시퀀스 애니메이션 에셋들 진입해서 어택4 에셋을 제외하고 루트 모션 활성화 체크 해제.
+- 기본적으로 스켈레탈을 움직이게 하는건 애니메이션 클래스임.
+- 즉, 단순히 스켈레탈을 움직이게 한다고 해서 캐릭터의 위치가 변하지 않음.
+- 루트 모션 활성화 옵션은 캐릭터의 트랜스폼을 같이 동기화 해주는 기능임.
+- 예를들어 어택4 에셋에서 루트 모션을 비활성화하면 캐릭터가 돌진해서 다시 돌진 시작점으로 돌아오는걸 볼 수 있음.
+- 스켈레탈만 움직이게 했을 뿐 캐릭터의 트랜스폼은 동기화하지 않았기 때문.
+- 스켈레탈 메시 컴포넌트는 씬 컴포넌트를 가짐. 즉, 루트 컴포넌트인 캡슐 컴포넌트의 트랜스폼 값을 따를 수 있음.
+- 루트 모션 활성화를 켜면 트랜스폼 정보를 스켈레탈이 받는게 아니라 루트 컴포넌트(캡슐 컴포넌트)가 받게하여 캐릭터와 스켈레탈 모두 트랜스폼이 적용되는 원리.
+- 몽타주 애니메이션은 시퀀스 애니메이션을 확장하는 데이터라서, 원본인 시퀀스 애니메이션을 삭제하면 몽타주 애니메이션도 삭제됨.
+
+여기까지는 어택1 애니메이션만 적용한 상태. (인덱스 0에만 접근하기 때문)

@@ -1,0 +1,54 @@
+1. BP_Character -> SelectWeapon -> Cast To ABP_Character 노드, SET BS Weapon 노드 2개 삭제.
+2. 콘텐츠 드로어 -> 추가 -> 블루프린트 -> 블루프린트 인터페이스 선택.
+- 이름 예시: BPI_CharacterAnimation
+3. BPI_CharacterAnimation -> 함수 추가.
+- 이름 예시: SetBSWeapon
+4. SetBSWeapon -> 디테일 -> 입력 추가 -> 이름 예시: BlendSpace, 타입: 블렌드 스페이스.
+5. BPI_CharacterAnimation 컴파일.
+6. ABP_Character -> 클래스 세팅 -> 디테일 -> 구현된 인터페이스 -> 추가 -> BPI_CharacterAnimation.
+7. ABP_Character 컴파일.
+8. 이벤트 그래프 -> 내 블루프린트 -> 인터페이스 -> SetBSWeapon -> 이벤트 그래프에 드래그 배치.
+9. 노드 추가 -> SET BS Weapon.
+10. Event SetBSWeapon -> SET BS Weapon 모든 핀 연결.
+11. BP_Character -> SelectWeapon -> Get Anim Instance 의 출력핀 당겨서 노드 추가 -> Set BSWeapon.
+12. Set BSWeapon 복제.
+13. Get Anim Instance -> 복제한 Set BSWeapon 노드에도 Target 핀 연결.
+14. Get Blend Space -> 원본 Set BSWeapon 연결.
+15. SET 무브먼트 방향으로 회전 조정 체크 해제된 노드 -> 원본 Set BSWeapon 연결.
+16. SET 무브먼트 방향으로 회전 조정 체크된 노드 -> 복제한 Set BSWeapon 연결.
+- 직접적인 하위 클래스로 캐스팅 없이 범용적으로 수정 완료.
+
+17. BP_Weapon -> 변수 -> StateMontageMap 복사.
+18. BP_Character -> 변수 -> 붙여넣기 및 컴파일.
+19. 콘텐츠 드로어 -> 추가 -> 기타 -> 데이터 에셋 -> BP_StateMontageData -> 선택.
+- 이름 예시: DA_CharacterDodging
+20. DA_CharacterDodging -> 인덱스 두 개 추가.
+21. 인덱스 0 -> Montage -> Common_Tumble_Montage 선택, Rate -> 1.5 (구르기 속도 높히기)
+22. 인덱스 1 -> Montage -> Common_Backstep_Montage 선택.
+23. BP_Character -> 변수 -> StateMontageMap -> 디테일 -> 기본값 -> 추가 -> Dodging, DA_CharacterDodging.
+24. 이벤트 그래프 -> 노드 추가 -> Get State Montage Map.
+25. Get State Montage Map 의 출력핀 당겨서 노드 추가 -> FIND.
+26. SET Dodging -> FIND 연결.
+27. FIND 의 출력핀 당겨서 노드 추가 -> Get Montage Data.
+28. Vector Is Zero -> Get Montage Data.
+29. Get Montage Data 의 출력핀 분할 -> Play Montage 연결.
+- 닷징 상태 애니메이션 캡슐화 완료.
+
+30. FIND, Get Montage Data 선택 -> 우클릭 -> 함수로 접기.
+31. New Function 노드 선택 -> 디테일 -> 입력핀 이름 변경 -> 각각 Map, Index, State, 출력핀 이름 변경 -> 각각 Montage, Rate, Section
+32. 퓨어 체크, 함수 이름 변경: FindMontageData
+33. 콘텐츠 드로어 -> 추가 -> 블루프린트 -> 블루프린트 함수 라이브러리 선택.
+- 이름 예시: BFL_GlobalFunctions
+34. BFL_GlobalFunctions -> 함수 추가.
+- 이름 예시: FindMontageData
+35. BP_Character -> 함수 -> FindMontageData 복사 -> BFL_GlobalFunctions -> FindMontageData -> 붙여넣기.
+36. BP_Character -> 이벤트 그래프 -> Find Montage Data 노드 및 함수 삭제 -> 컴파일 -> 노드 추가 -> Find Montage Data.
+37. Get State Montage Map -> Find Montage Data 연결.
+38. SET Dodging -> Find Montage Data 연결.
+39. Vector Is Zero -> Find Montage Data 연결.
+40. Find Montage Data -> Play Montage 연결.
+41. BP_Weapon -> Get State Montage Data -> FIND, Get Montage Data, Get State, Get Index 노드 삭제.
+42. 노드 추가 -> Find Montage Data.
+43. GetStateMontageData, Get State Montage Map -> Find Montage Data 연결.
+44. Find Montage Data -> Return Node 연결.
+- BP_Character, BP_Weapon 의 중복 함수 전역 모듈화 완료.

@@ -1,0 +1,76 @@
+1. 콘텐츠 드로어 -> 추가 -> 입력 -> 입력 액션.
+- 이름 예시: IA_Dodge
+2. IA_Dodge -> 트리거 추가 -> 눌림.
+3. IMC_Default -> 점프키 변경 -> BackSpace.
+4. 매핑 추가 -> IA_Dodge, 키 매핑 -> Space.
+5. BP_PlayerController -> 이벤트 그래프 -> 노드 추가 -> EnhancedInputAction IA_Dodge.
+6. 콘텐츠 드로어 -> 추가 -> 블루프린트 -> 블루프린트 인터페이스 선택.
+- 이름 예시: BPI_Character
+7. BPI_Character -> 내 블루프린트 -> 새함수 -> 이름 변경 -> Dodge
+8. BP_Character -> 클래스 세팅 -> 디테일 -> 구현된 인터페이스 -> 추가 -> BPI_Character 선택.
+- 내 블루프린트 탭에 인터페이스라는 새로운 카테고리가 추가됨.
+- BPI_Character 에서 함수를 추가하고 컴파일하면 이 인터페이스 항목에 함수가 자동으로 추가됨.
+9. BP_PlayerController -> Get Controlled Pawn 노드 복제.
+10. Get Controlled Pawn 출력핀 당겨서 노드 추가 -> Dodge.
+11. EnhancedInputAction IA_Dodge -> Dodge 연결.
+12. BP_Character -> 내 블루프린트 -> 인터페이스 -> Dodge 더블클릭.
+13. Event Dodge 노드의 실행핀 당겨서 노드 추가 -> Print String -> 실행핀 연결.
+- 플레이 후 스페이스바를 누르면 텍스트가 출력됨.
+- BP_PlayerController 의 Dodge 노드는 BP_Character 의 Dodge 함수를 실행시켜주는걸 알 수 있음.
+- Dodge 노드는 받는 타입이 최상위 클래스인 오브젝트이기 때문에, Get Controlled Pawn 의 반환값을 캐릭터 타입으로 다운 캐스팅하지 않고 Dodge 노드에 입력해줄 수 있음.
+- Dodge 노드의 강점은 Get Controlled Pawn 노드에서 반환된 Pawn 이 BP_PlayerController 가 알지 못하는 존재면(예: BP_GameMode 에 등록된 디폴트 폰 클래스가 아닌경우)
+오류가 발생하지 않고 Dodge 기능을 실행하지 않음. (Pawn이 None 이어도 마찬가지)
+- 캐릭터가 가진 고유기능을 실행하기 위해서 캐릭터 타입으로 다운캐스팅 하지 않아도 돼는 장점을 가짐.
+14. 콘텐츠 드로어 -> 추가 -> 블루프린트 -> 열거형 선택.
+- 이름 예시: E_CharacterState
+15. E_CharacterState -> 이너머레이터 추가 6개
+- 이름 예시: Idle, Dodging, Arming, Acting, Damaged, Died
+16. BP_Character -> 이벤트 그래프 -> Print String 노드 삭제.
+17. 변수 추가 -> 이름: State, 타입: E_CharacterState.
+18. Get State -> 출력핀 당겨서 연산자 노드 추가 -> == (Equal Enum).
+19. 노드 추가 -> Branch
+- 이 노드는 if 구문 느낌으로 사용. (분기 노드, if 로 검색해도 나옴, 또는 B 키를 누른채로 그래프 빈 공간 클릭.)
+20. Event Dodge -> Branch 연결, 연산자 노드 -> Branch 연결.
+21. BPI_Character -> 함수 추가 -> IsState
+22. IsState -> 디테일 -> 출력 추가 -> 이름 예시: bResult, 값 타입: bool.
+23. 입력 추가 -> 이름 예시: State, 값 타입: E Character State. 이후 BPI_Character 컴파일 진행.
+24. BP_Character -> 이벤트 그래프 -> State 노드, 연산자 노드 잘라내기 (Ctrl + X) -> 인터페이스 -> IsState 진입 -> 붙여넣기 (Ctrl + V).
+25. IsState -> 연산자 노드 연결, 연산자 노드 -> Return Node 연결.
+26. 이벤트 그래프 -> 노드 추가 -> Is State.
+27. Event Dodge -> Is State -> Branch 실행핀 연결, Result 핀 -> Condition 핀 연결.
+28. 노드 추가 -> Set State, Branch True 핀 -> Set State 연결, State 타입 -> Dodging.
+29. 콘텐츠 드로어 -> 검색 -> Common_Backstep -> 우클릭 -> 생성 -> 애님몽타주 생성 선택. (백스텝 애니메이션)
+- 이름 예시: Common_Backstep_Montage
+30. BP_Character -> 이벤트 그래프 -> 노드 추가 -> Play Montage.
+31. Set State -> Play Montage 연결.
+32. 컴포넌트 -> 메시 컴포넌트 -> In Skeletal Mesh Component 핀에 드래그 배치.
+- 주는 값과 받는 값이 같을 때 사용하는 기능. Get Mesh 노드를 추가하는 것과 같음.
+33. Montage to Play 핀 선택 -> Common_Backstep_Montage.
+34. ABP_Character -> 애님그래프 -> 노드 추가 -> slot 'Default Slot'.
+- Common_Backstep_Montage 에 가보면 그래프 왼쪽에 DefaultGroup.DefaultSlot 라고 적혀 있음.
+- 이 애니메이션을 플레이 했을 때 Default Slot 에서 재생된다는 의미.
+- Default Slot 에서 재생되는 애니메이션이 있을 경우 BS_Unarmed 노드를 무시하고 Default Slot 에 있는 애니메이션을 Output Pose 노드에 입력해 재생함.
+35. BS_Unarmed -> slot 'Default Slot' -> Output Pose 연결.
+36. BP_Character -> 이벤트 그래프 -> Play Montage 노드 출력핀들 살펴보기.
+- On Completed: 몽타주 애니메이션 재생이 끝나고 나서 출력하는 핀.
+- On Blend Out: 이전에 재생중이었던 애니메이션과 자연스럽게 연계하고나서 출력하는 핀.
+37. Set State 노드 복제 -> State 타입 -> Idle, On Blend Out 핀과 연결.
+
+### 애니메이션 컴포짓과 애니메이션 몽타주의 차이
+1. 애니메이션 컴포짓
+- 콘텐츠 드로어 -> 추가 -> 애니메이션 -> 애니메이션 컴포짓을 선택해 생성할 수 있음.
+- 에셋 브라우저 탭에서 여러 애니메이션 에셋을 드래그 배치하여 여러 애니메이션을 합성할 수 있음.
+- 하나의 애니메이션으로 합쳐짐.
+- 애님그래프에 배치할 수 있음.
+2. 애니메이션 몽타주
+- 콘텐츠 드로어 -> 추가 -> 애니메이션 -> 애니메이션 몽타주를 선택해 생성할 수 있음.
+- 에셋 브라우저 탭에서 여러 애니메이션 에셋을 드래그 배치하여 여러 애니메이션을 합성할 수 있음.
+- 여러 애니메이션을 단순히 합치기만 하지 않고, 각 애니메이션 간에 연결을 자연스럽게 처리함.
+- 애님그래프에 배치할 수 없고, 슬롯 노드를 사용해야함.
+
+### 구르기 애니메이션으로 변경해서 적용해보기.
+38. 콘텐츠 드로어 -> 검색 -> Common_Tumble.
+39. Common_Tumble 선택 및 우클릭 -> 생성 -> 애님몽타주 생성 선택. (구르기 애니메이션)
+- 이름 예시: Common_Tumble_Montage
+40. Common_Tumble_Montage -> 슬롯이 Default 그룹의 Default 슬롯인지 확인.
+41. BP_Character -> 이벤트 그래프 -> Play Montage 노드의 Montage to Play 핀 -> Common_Tumble_Montage 선택.

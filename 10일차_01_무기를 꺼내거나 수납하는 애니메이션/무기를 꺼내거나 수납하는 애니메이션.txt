@@ -1,0 +1,61 @@
+1. 콘텐츠 드로어 -> 에셋 검색 -> Warrior_Draw_1 -> 우클릭 -> 생성 -> 애님 몽타주 생성 선택.
+- 이름 예시: Warrior_Draw_Montage
+2. Warrior_Draw_Montage -> 에셋 브라우저에서 Warrior_Draw_2 를 DefaultGroup.DefaultSlot 트랙에 드래그 배치.
+3. 노티파이 1번 트랙 우클릭 -> 노티파이 추가 -> 몽타주 노티파이 선택.
+4. None 태그를 끌어서 Warrior_Draw_1 애니메이션이 끝나는 지점에 이동.
+- 다음 애니메이션으로 전환되는 지점을 알리는 용도.
+5. BP_Character -> SelectWeapon -> Event SelectWeaponA 실행핀 당겨서 노드 추가 -> Play Montage.
+6. Play Montage 의 Is Skeletal Mesh Component 핀 당겨서 노드 추가 -> Get Mesh.
+7. Montage to Play 핀 -> Warrior_Draw_Montage.
+8. Play Montage 의 실행핀에서 나오는 간선을 On Notify Begin 핀으로 이동.
+9. 노드 추가 -> Is State, Branch
+10. Event SelectWeaponA -> Is State 연결.
+11. Event SelectWeaponA 의 실행핀과 Result 핀 -> Branch 연결.
+12. 노드 추가 -> Set State, State 핀 -> Arming, True 핀과 연결.
+13. Set State -> Play Montage 연결.
+14. On Blend Out 핀 당겨서 노드 추가 -> Set State, State 핀 -> Idle.
+15. Warrior_Draw_Montage -> 몽타주(DefaultGroup) 트랙 우클릭 -> 새 몽타주 섹션 선택.
+- 섹션 이름 예시: Reverse
+16. Reverse 태그를 끌어서 오른쪽 제일 끝으로 이동.
+- 또는 태그 우클릭 -> 섹션 프레임 -> 30
+17. BP_Character -> SelectWeapon -> Play Montage 의 Play Rate 핀 -> -1, Starting Section 핀 -> Reverse
+- 플레이시 검을 뽑는 애니메이션이 역재생되는걸 알 수 있음.
+18. 콘텐츠 드로어 -> 추가 -> 블루프린트 -> 구조체 선택.
+- 구조체 이름 예시: F_PlayMontageParameters
+- 언리얼 구조체는 멤버 변수가 없음.
+19. F_PlayMontageParameters -> 변수 3개 추가.
+- 이름 예시: Montage, 타입: 애님 몽타주.
+- 이름 예시: Rate, 타입: 플로트.
+- 이름 예시: Section, 타입: 네임.
+20. 기본값 -> Rate -> 1
+- 애니메이션 기본 재생속도 설정.
+21. 콘텐츠 드로어 -> 추가 -> 블루프린트 클래스 -> 모든 클래스 -> Primary DataAsset.
+- 이름 예시: BP_StateMontageData
+22. BP_StateMontageData -> 변수 추가 -> 이름: MontageData, 타입: F_PlayMontageParameters, 타입 우클릭해서 배열로 변경, 디테일에서 프라이빗 체크.
+- 언리얼 블루프린트 클래스에서 멤버 변수는 접근 지정자가 Private, Public 뿐임.
+- 단, 멤버 함수는 Protected 도 가능.
+23. 함수 추가 -> 이름: GetMontageData
+24. GetMontageData 함수 진입 -> 디테일 -> 입력 추가 -> 이름: Index, 타입: 인티저.
+25. 노드 추가 -> Get Montage Data.
+26. Get Montage Data 출력핀 당겨서 노드 검색 -> IS VALID INDEX.
+- 인덱스를 넣어주면 그 인덱스에 해당하는 원소가 존재하는지 여부를 알려주는 노드.
+27. 노드 추가 -> Branch.
+28. GetMontageData -> Branch 연결, GetMontageData -> IS VALID INDEX -> Branch 연결.
+29. 노드 추가 -> Get Montage Data, 출력핀 당겨서 노드 추가 -> GET (a ref).
+30 노드 추가 -> Get Index 2개.
+- 이 함수로 들어온 인덱스 핀의 값을 반환해주는 노드. 즉, 함수가 받은 파라미터를 Getter 를 통해 가져올 수 있음.
+- GetMontageData 의 Index 핀 끊기.
+- 각각 IS VALID INDEX 노드와 GET 노드에 연결.
+31. Branch 의 True 핀 당겨서 노드 생성 -> Return Node.
+32. GET 출력핀 당겨서 Return 노드에 두기. (인덱스에 해당하는 몽타주 데이터 반환.)
+- 이름 예시: MontageData
+33. 콘텐츠 드로어 -> 추가 -> 기타 -> 데이터 에셋 -> BP_StateMontageData 선택.
+- 이름 예시: DA_Sword_Arming
+34. DA_Sword_Arming -> Montage Data (없으면 BP_StateMontageData 컴파일) -> 인덱스 추가.
+35. 인덱스 0 -> Montage -> Warrior_Draw_Montage.
+36. 인덱스 1 -> Montage -> Warrior_Draw_Montage, Rate: -1, Section: Reverse
+37. BP_Weapon -> 변수 추가.
+- 이름 예시: StateMontageMap
+- 디테일 -> 키 값 타입: E Character State, 컨테이너 타입: 맵, 밸류 값 타입: BP State Montage Data.
+38. BP_Weapon 컴파일.
+39. BP_Sword -> 클래스 디폴트 -> State Montage Map -> 엘리먼트 추가 -> 키: Arming, 밸류: DA_Sword_Arming.
