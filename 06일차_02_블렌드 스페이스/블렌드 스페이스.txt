@@ -12,6 +12,6 @@
 10. Unarmed_Walk -> 가운데 드래그 배치.
 11. Unarmed_Run -> 끝에(600.0) 드래그 배치.
 - 그래프 창에서 좌측 위에있는 버튼을 누르면 배치한 위치에 에셋의 이름이 뜸.
-12. ABP_Character -> 에셋 브라우저 -> BS_Unarmed 드래그 배치 및 아웃풋 포즈 노드와 연결.
+12. ABP_Character -> 애님 그래프 -> 에셋 브라우저 -> BS_Unarmed 드래그 배치 및 아웃풋 포즈 노드와 연결.
 13. 애님그래프 -> BS_Unarmed 선택 -> 디테일 -> 좌표 -> Speed -> 핀 타입 -> Speed.
 - 또는 BS_Unarmed 의 Speed 핀 우클릭 -> 바인딩 -> Speed.

@@ -25,7 +25,7 @@
 20. Branch 의 False 핀 당겨서 노드 추가 -> SET Current Weapon.
 21. True 핀과 연결된 SET Current Weapon 의 출력핀 -> Is Armed 노드의 입력 실행핀에 연결.
 - 무기를 수납하고 선택한 무기가 수납한 무기와 다르면 새로운 무기를 꺼내기 위해 다시 앞 부분부터 수행.
-- 이때 Is Armed 노드는 무기를 수납한 시점에서 무장 상태가 해제되었으므로 False를 반환하게 되므로, 이후 무장하는 애니메이션이 진행됨.
+- 이때 Is Armed 노드는 무기를 수납한 시점에서 무장 상태가 해제되었으므로, False를 반환하게 되므로, 이후 무장하는 애니메이션이 진행됨.
 22. Get Current Weapon -> Unequip Weapon 의 Weapon 핀과 연결.
 - 어떤 무기를 선택하든 수납할 때 선택한 무기가 아닌 현재 들고 있는 무기를 수납함.
 23. 노드 추가 -> Select (삼지창 아이콘).

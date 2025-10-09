@@ -10,13 +10,13 @@
 6. ToAir -> IsFalling 연결 -> 트랜지션 룰 더블클릭 -> Result 체크.
 7. 이벤트 그래프 -> Get Velocity 노드의 출력핀 변수로 승격.
 - 이름 예시: Velocity
-- IsFalling 에서 Jump_Start 와 Jump_Loop 로 가는 분기를 구별하는 기준은 Z 속력.
+- IsFalling 에서 Jump_Start 와 Jump_Loop 로 가는 분기를 구별하는 기준은 캐릭터의 Z축 속도.
 8. 이벤트 블루프린트 업데이트 애니메이션 노드의 실행핀 -> Set Velocity 노드와 연결.
 9. Set Velocity 노드의 실행핀 -> Set Speed 노드와 연결.
 10. Set Velocity -> Vector Length XY 연결.
 11. 애님 그래프 -> IsFalling -> Jump_Start 트랜지션 룰 진입 -> Get Velocity 노드 추가 -> 핀 분할.
 12. Z핀 당겨서 '>' 연산자 노드 추가, 연산자 노드 -> Result 연결.
-- Z 속력이 0보다 클 경우, Jump_Start 로 판단.
+- Z축 속도가 0보다 클 경우, Jump_Start 로 판단.
 13. IsFalling -> Jump_Loop 트랜지션 룰 진입 -> Result 체크.
 14. IsFalling -> Jump_Loop 트랜지션 룰 선택 -> 디테일 -> 우선권 순서 -> 2
 15. IsFalling -> Jump_Start 트랜지션 룰 선택 -> 디테일 -> 우선권 순서 -> 1

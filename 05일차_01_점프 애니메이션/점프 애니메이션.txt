@@ -35,7 +35,7 @@
 16. IsFalling 노드를 Jump_Start 노드에 연결.
 - 캐릭터의 IsFalling 이 True 이면 점프 애니메이션이 시작하도록 유도.
 17. IsFalling -> Jump_Start -> JumpLoop -> Jump_End: 이 간선들의 트랜지션 룰도 Result 노드 체크.
-18. Jump_Start -> Jump_Loop 트랜지션 룰 선택 -> 디테일 -> 트랜지션 -> 스테이트의 시퀸스 플레이어에 따른 자동 규칙 체크.
+18. Jump_Start -> Jump_Loop 트랜지션 룰 선택 -> 디테일 -> 트랜지션 -> 스테이트의 시퀀스 플레이어에 따른 자동 규칙 체크.
 - 애니메이션 재생이 끝나면 다음 노드의 애니메이션 재생으로 실행해주는 기능.
 19. Jump_Loop -> Jump_End 트랜지션 룰 버튼 더블클릭 -> Result 선택 -> 디테일 -> 트랜지션 시작 가능 -> GetMovementComponent -> IsMovingOnGround 선택.
 - 캐릭터가 지면에 닿은 상태가 True 일 때 Jump_End 애니메이션 재생 유도.
