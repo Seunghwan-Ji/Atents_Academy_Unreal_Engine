@@ -1,0 +1,12 @@
+1. 컨텐츠 드로어 -> Common_GetHit -> 몽타주로 생성.
+- 이름 예시: Common_GetHit_Montage
+2. Common_GetHit_Montage -> 몽타주 슬롯 이름-> FullBody.
+- 슬롯 트랙에서 Common_GetHit 클릭 -> 디테일 -> 애니메이션 세그먼트 -> 끝 시간 -> 1.25 (몽타주 애니메이션을 1.25초 까지만 재생)
+- 에셋 디테일 -> 블렌드 인 시간 -> 0, 블렌드 아웃 시간 -> 0.5 (설정은 본인 취향)
+3. 컨텐츠 드로어 -> DA_Character_Dodging 복제.
+- 이름 예시: DA_Character_Damaged
+4. DA_Character_Damaged -> 인덱스 비우고 인덱스 새로 추가.
+- Montage -> Common_GetHit_Montage.
+- Rate -> 1.25
+5. BP_Character -> 변수 -> StateMontageMap -> 디테일 -> 기본값 추가 -> Damaged: DA_Character_Damaged.
+6. BP_Character -> 이벤트 그래프 -> EventAnyDamage 노드 부분에서 수업 시간에 작성한 로직 확인. (캐릭터가 데미지를 받았을 때 애니메이션 넣기)
