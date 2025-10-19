@@ -1,0 +1,41 @@
+# 머티리얼에 플래시 효과를 주기 전에 사전 작업
+- 현재 적 캐릭터도 나의 캐릭터와 같은 머티리얼 에셋을 사용중.
+- 그러므로 적을 때렸을 때 플래시 효과를 주면 나의 캐릭터도 플래시 효과가 발생함. (같은 머티리얼 에셋의 주소를 공유하기 때문)
+- 나의 캐릭터와 적 캐릭터가 스폰되었을 때 기존 머티리얼을 동적인 머티리얼로 새로 교체해줘야됨.
+1. BP_Character -> 이벤트 그래프 -> Event BeginPlay -> Sequence.
+- 시퀀스 노드에 새 출력핀 추가.
+- 수업 시간에 작성한 로직 확인.
+
+# 머티리얼 인스턴스를 만들어서 내 캐릭터와 적 캐릭터 색 구분하기
+1. 콘텐츠 드로어 -> M_Body, MI_Logo 선택 및 우클릭 -> 머티리얼 인스턴스 생성.
+- 이름 예시: M_Body_Player, MI_Logo_Player
+- M_Body_Player -> 디테일 -> Global Vector Parameter Values -> BodyColor -> RGB: 1, 1, 1
+- MI_Logo_Player -> 디테일 -> Global Vector Parameter Values -> BodyColor -> RGB: 1, 1, 1
+2. 적 캐릭터용으로 한 번더 만들기.
+- 이름 예시: M_Body_Enemy, MI_Logo_Enemy
+- M_Body_Enemy -> 디테일 -> Global Vector Parameter Values -> BodyColor -> RGB: 1, 1, 1
+- MI_Logo_Enemy -> 디테일 -> Global Vector Parameter Values -> BodyColor -> RGB: 1, 1, 1
+
+# BP_Character 클래스를 파생해서 내 캐릭터와 적 캐릭터 만들기
+1. 콘텐츠 드로어 -> BP_Character 우클릭 -> 자손 블루프린트 클래스 생성.
+- 이름 예시: BP_Player
+- BP_Player -> 메시 컴포넌트 -> 디테일 -> 머티리얼 -> 엘리먼트 0 -> M_Body_Player, 엘리먼트 1 -> MI_Logo_Player
+- BP_GameMode -> 클래스 디폴트 -> 디폴트 폰 클래스 -> BP_Player.
+2. 적 캐릭터용으로 한 번더 만들기.
+- 이름 예시: BP_Enemy
+- BP_Enemy -> 메시 컴포넌트 -> 디테일 -> 머티리얼 -> 엘리먼트 0 -> M_Body_Enemy, 엘리먼트 1 -> MI_Logo_Enemy
+- 레벨 뷰포트 -> 배치된 적 캐릭터 선택 및 우클릭 -> 선택된 액터를 다음으로 대체 -> BP_Enemy.
+- 아웃라이너 -> BP_Character0 선택 및 F2 키 입력해서 이름 변경 -> BP_Enemy0
+
+# 이제 BP_Character 클래스 자체는 직접 객체를 생성하지 못하게 하기. (추상 클래스화)
+1. BP_Character -> 클래스 세팅 -> 고급 -> 추상 클래스 생성 체크 후 컴파일.
+- 이제 이 클래스는 레벨에 배치하여 객체를 생성할 수 없고, 파생된 클래스만 객체 생성 가능. (BP_Player, BP_Enemy)
+2. BP_Character -> 변수 -> WeaponClasses -> 디테일 -> 기본값 -> WeaponClasses 배열의 인덱스 비우기 및 컴파일.
+- 모든 적이 소드 무기를 사용하지 않거나, 무기 자체를 다루지 않을 수 있으므로 베이스 클래스에서는 비우고 파생된 클래스에서 인덱스를 추가하도록 하기.
+- BP_Player -> 클래스 디폴트 -> 디폴트 -> Weapon Classes -> 엘리먼트 추가 -> BP_Sword. (내 캐릭터는 검을 쥐도록 함)
+## BP_Weapon 도 추상 클래스화 하기
+- BP_Weapon -> 클래스 세팅 -> 고급 -> 추상 클래스 생성 체크 후 컴파일.
+
+# 피격 시 머티리얼에 플래시 효과 주기
+1. BP_Character -> 이벤트 그래프 -> Event AnyDamage.
+- Set State (Damaged) 부분 부터 수업 시간에 작성한 로직 확인.
